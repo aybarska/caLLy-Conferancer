@@ -1,0 +1,32 @@
+{
+  "pins" : [
+    {
+      "identity" : "kingfisher",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/onevcat/Kingfisher.git",
+      "state" : {
+        "revision" : "44e891bdb61426a95e31492a67c7c0dfad1f87c5",
+        "version" : "7.4.1"
+      }
+    },
+    {
+      "identity" : "voxeet-sdk-ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/voxeet/voxeet-sdk-ios.git",
+      "state" : {
+        "revision" : "05d6477a6f56f63da9a3500171a7863ba9f0742b",
+        "version" : "3.7.4"
+      }
+    },
+    {
+      "identity" : "voxeet-uxkit-ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/voxeet/voxeet-uxkit-ios.git",
+      "state" : {
+        "revision" : "2e34297844b0011f6d21471e1c348276d537c891",
+        "version" : "1.7.3"
+      }
+    }
+  ],
+  "version" : 2
+}
