@@ -9,11 +9,15 @@ import UIKit
 import VoxeetSDK
 import VoxeetUXKit
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
 
+    @IBOutlet weak var avatar: UIImageView!
     @IBOutlet weak var usernameTextField: UITextField!
     @IBOutlet weak var conferenceNameTextField: UITextField!
     @IBOutlet weak var startConferenceButton: UIButton!
+    
+    var imagePicker = UIImagePickerController()
+    var imagePicked = false
     
     private let kConferenceNameNSUserDefaults = "conferenceNameNSUserDefaults"
     private let kUsernameNSUserDefaults = "usernameNSUserDefaults"
@@ -41,6 +45,16 @@ class ViewController: UIViewController {
             usernameTextField.text = username
         }
         
+        avatar.layer.borderWidth = 1
+        avatar.layer.masksToBounds = false
+        avatar.layer.borderColor = UIColor.black.cgColor
+        avatar.layer.cornerRadius = avatar.frame.height/2
+        avatar.clipsToBounds = true
+        
+        imagePicker.delegate = self
+        let tapGR = UITapGestureRecognizer(target: self, action: #selector(self.avatarPicker))
+        avatar.addGestureRecognizer(tapGR)
+        avatar.isUserInteractionEnabled = true
         
     }
     
@@ -49,6 +63,32 @@ class ViewController: UIViewController {
         conferenceNameTextField.becomeFirstResponder()
     }
 
+    @objc func avatarPicker(sender: UITapGestureRecognizer) {
+        if sender.state == .ended {
+            print("UIImageView tapped")
+            if UIImagePickerController.isSourceTypeAvailable(.savedPhotosAlbum){
+                print("Button capture")
+
+                
+                imagePicker.sourceType = .savedPhotosAlbum
+                imagePicker.allowsEditing = false
+                imagePicker.delegate = self
+                present(imagePicker, animated: true, completion: nil)
+            }
+        }
+    }
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        picker.dismiss(animated: true, completion: nil)
+        if let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
+            avatar.image = image
+            imagePicked = true
+        }
+
+    }
+    
+
+    
     @IBAction func startConferenceAction(_ sender: Any) {
         guard VoxeetSDK.shared.conference.current?.id == nil else { return }
                
@@ -73,7 +113,15 @@ class ViewController: UIViewController {
                
                // Connect participant with a random avatar and start conference.
                let avatarID = Int(arc4random_uniform(1000000))
-               let participant = VTParticipantInfo(externalID: nil, name: username, avatarURL: "https://gravatar.com/avatar/\(avatarID)?s=200&d=identicon")
+               let avatarURL = "https://gravatar.com/avatar/\(avatarID)?s=200&d=identicon"
+               
+                if(imagePicked == true) {
+                    //do upload image to firebase. Get the link and make it equal to
+                    //avatar url
+                }
+        
+               let participant = VTParticipantInfo(externalID: nil, name: username, avatarURL: avatarURL)
+        
                VoxeetSDK.shared.session.open(info: participant) { error in
                    self.startConference(alias: confAlias)
                }
